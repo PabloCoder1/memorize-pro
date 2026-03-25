@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // A URL foi removida daqui, conforme o padrão do Prisma 7
+}
+
+// Modelo de Usuário (Sincronizado com o Clerk)
+model User {
+  id            String   @id @default(cuid())
+  externalId    String   @unique // ID do Clerk
+  email         String   @unique
+  name          String?
+  orders        Order[]
+  createdAt     DateTime @default(now())
+}
+
+// Modelo de Pedido (Os álbuns de 10 ou 20 fotos)
+model Order {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  type          String   // "ESSENCIAL" (10 fotos) ou "PREMIUM" (20 fotos)
+  status        String   @default("AGUARDANDO_PAGAMENTO") // PAGO, PROCESSANDO, CONCLUIDO
+  amount        Float
+  photos        Photo[]  // As fotos enviadas para este pedido
+  createdAt     DateTime @default(now())
+}
+
+// Modelo de Foto Individual
+model Photo {
+  id            String   @id @default(cuid())
+  orderId       String
+  order         Order    @relation(fields: [orderId], references: [id])
+  originalUrl   String   // Link da foto que o cliente mandou (S3)
+  restoredUrl   String?  // Link da foto que VOCÊ restaurou
+  createdAt     DateTime @default(now())
+}
