@@ -1,9 +1,11 @@
+import { Hero } from "@/components/Hero";
+import { HowItWorks } from "@/components/HowItWorks"; // Importe aqui
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-900">
-      <h1 className="text-4xl font-bold text-white">
-        Memorize Pro 📸
-      </h1>
+    <main className="min-h-screen bg-gray-900 flex flex-col">
+      <Hero />
+      <HowItWorks /> {/* Adicione aqui */}
     </main>
   );
 }
